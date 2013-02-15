@@ -1,0 +1,56 @@
+This is the nginx how to.
+
+Install
+=======
+
+You can install nginx with ::
+
+    # apt-get install nginx
+
+HTTPS
+=====
+
+To generate private (dummy) certificates you can perform the following list of openssl commands.
+
+First change directory to where you want to create the certificate and private
+key, for example::
+
+    $ cd /usr/local/nginx/conf
+
+Now create the server private key, you'll be asked for a passphrase::
+
+    $ openssl genrsa -des3 -out server.key 1024
+
+Create the Certificate Signing Request (CSR)::
+
+    $ openssl req -new -key server.key -out server.csr
+
+Remove the necessity of entering a passphrase for starting up nginx with SSL
+using the above private key::
+
+    $ cp server.key server.key.org
+    $ openssl rsa -in server.key.org -out server.key
+
+Finally sign the certificate using the above private key and CSR::
+
+    $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+Update Nginx configuration by including the newly signed certificate and
+private key::
+
+    server {
+        server_name YOUR_DOMAINNAME_HERE;
+        listen 443;
+        ssl on;
+        ssl_certificate /usr/local/nginx/conf/server.crt;
+        ssl_certificate_key /usr/local/nginx/conf/server.key;
+    }
+
+Restart Nginx.
+
+Now we're ready to access the above host using https://YOUR_DOMAINNAME_HERE.
+
+Reference
+=========
+
+.. [1] http://wiki.nginx.org/HttpSslModule

@@ -1,0 +1,90 @@
+This is the mediagoblin how to.
+
+Most of the information where are from the mediagoblin documentation and [1]_
+mediagoblin wiki em [2]_ e [3]_.
+
+The instalation present some problems and a collection of helpfull tips are
+found at [4]_.
+
+Getting the source
+==================
+
+You can donwload the source using git.
+
+    $ git clone git://gitorious.org/mediagoblin/mediagoblin.git
+
+Prepare System
+==============
+
+MediaGoblin has the following core dependencies:
+
+* Python 2.6 or 2.7
+* python-lxml
+* git
+* SQLite/PostgreSQL
+* Python Imaging Library (PIL)
+* virtualenv
+
+and
+
+* python-mock
+* sqlalchemy-migrate
+* python-markdown
+* python-configobj
+* python-webtest
+* python-babel
+
+Is recommend that you create a user dedicated to running MediaGoblin, e.g.,
+`goblin`, and create a working directory, e.g., `/home/goblin/mediagoblin`.
+
+Install MediaGoblin and Virtualenv
+==================================
+
+Issue the following commands, to create and change the working directory.
+
+    $ su goblin
+    $ cd /home/goblin
+    $ git clone git://gitorious.org/mediagoblin/mediagoblin.git
+    $ cd mediagoblin
+
+And set up the in-package virtualenv:
+
+    $ (virtualenv --system-site-packages . || virtualenv .) && ./bin/python setup.py develop
+
+Assuming you are going to deploy with FastCGI, you should also install flup:
+
+    $ ./bin/easy_install flup
+
+Before you start using the database, you need to run:
+
+    $ ./bin/gmg dbupdate
+
+to populate the database with the MediaGoblin data structures.
+
+At this point MediaGoblin should be properly installed. You can test the
+deployment with the following command:
+
+    $ ./lazyserver.sh --server-name=broadcast
+
+The config files
+================
+
+Basically there are three config files:
+
+* mediagoblin.ini: Use this to configure MediaGoblin, the application. Want
+  to use a different storage system? Configure it here!
+* paste.ini: This just actually configures the web server that launches
+  the MediaGoblin application, and some other things (like actually sets
+  up the applications that serve your static files). 
+* mediagoblin/config_spec.ini: This sets the defaults for config file
+  options and the type conversion for things in mediagoblin.ini.
+  Developers who add new config options should probably register them
+  and their types here (and set some good defaults, if applicable). 
+
+Reference
+=========
+
+.. [1] http://docs.mediagoblin.org/
+.. [2] http://wiki.mediagoblin.org/Configure_MediaGoblin
+.. [3] http://wiki.mediagoblin.org/Deployment
+.. [4] http://saz.im/wiki/mediagoblin/
